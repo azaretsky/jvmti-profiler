@@ -1,14 +1,16 @@
-OBJECTS = agent.o profiler.o
-OUTPUT = profiler-agent.so
+JAVA_HOME = /usr/lib/jvm/java-11-openjdk-amd64
 
-LDFLAGS = -shared -s
-CFLAGS = -fvisibility=hidden -fPIC -O3 -Wall
 CPPFLAGS = -DLIBBSD_OVERLAY -isystem /usr/include/bsd \
-           -I/usr/lib/jvm/java-8-openjdk-amd64/include \
-           -I/usr/lib/jvm/java-8-openjdk-amd64/include/linux
+           -I"$(JAVA_HOME)/include" \
+           -I"$(JAVA_HOME)/include/linux"
+CFLAGS = -fvisibility=hidden -fPIC -O3 -Wall
+LDFLAGS = -shared -s
 
-$(OUTPUT): $(OBJECTS)
+objects = agent.o profiler.o
+output = profiler-agent.so
+
+$(output): $(objects)
 	$(CC) -o $@ $(LDFLAGS) $^
 
 clean:
-	$(RM) -f $(OBJECTS) $(OUTPUT)
+	$(RM) -f $(objects) $(output)
